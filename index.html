@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>5,000 Leagues From Home</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="header-container"></div>
+  <p>You are captain of the S.S. Slugdog and must get your ship through dangerous waters and safely back home, which is 5,000 leagues away from where you are now. Good luck.</p>
+  
+  <div id="hopeStatus"></div>
+
+  <button id="startButton" onclick="startJourney()">Start Journey</button>
+  <button id="pauseButton" style="display: none;" onclick="pauseJourney()">Pause Journey</button>
+  <button id="resumeButton" style="display: none;" onclick="resumeJourney()">Resume Journey</button>
+  <button id="repairButton" style="display: none;" onclick="repairShip()">Perform Ship Repair</button>
+  <button id="scoutButton" style="display: none;" onclick="scoutForFood()">Deploy Search Boats</button>
+<!-- Add the Return to Ship button with an onclick attribute pointing to a new function called returnToShip -->
+<button id="returnButton" style="display: none;" onclick="returnToShip()">Return to Ship</button>
+<button id="repairShipButton" style="display: none;" onclick="repairShipOnIsland()">Professionally Repair Ship</button>
+<button id="restockRationsButton" style="display: none;" onclick="restockRations()">Restock Crew Rations</button>
+<button id="searchIslandButton" style="display: none;" onclick="searchIsland()">Search the Island</button>
+<button id="talkToStrangersButton" style="display: none;" onclick="talkToStrangers()">Talk to Strangers</button>
+
+
+  
+  <div id="output"></div>
+  
+  <script>
+    var milesTraveled = 0;
+    var food = 500;
+var loot = 0;
+    var health = 100;
+    var paused = false;
+    var islandsVisited = 0;
+    var travelInterval;
+    var eventInterval;
+var totalLeaguesTraveled = 0;
+var hope = 50;
+var sideQuestOne = 0;
+var lightDistance = 0;
+var secretTold = 0;
+var hasBottle = 0;
+var wrongPerson = 0;
+var graveRob = 0;
+var eatPeep = 0;
+var animalFriend = 0;
+var wonGamble = 0;
+var nativeChase = 0;
+
+// Get the header container element by its id
+var headerContainer = document.getElementById("header-container");
+
+// Create an image element
+var image = document.createElement("img");
+
+// Set the src attribute of the image to your image file path
+image.src = "5kLFH.jpg";
+
+// Append the image to the header container
+headerContainer.appendChild(image);
+    
+function startJourney() {
+  document.getElementById("output").innerHTML = "Your voyage has begun!";
+  document.getElementById("startButton").style.display = "none"; // Hide the Start Journey button
+  document.getElementById("pauseButton").style.display = "block";
+  document.getElementById("repairButton").style.display = "block";
+  document.getElementById("scoutButton").style.display = "block";
+    clearInterval(travelInterval);
+    clearInterval(eventInterval);
+
+    travelInterval = setInterval(function () {
+        if (!paused) {
+            travel();
+        }
+    }, 1000);
+    eventInterval = setInterval(randomEvent, 4000); // Check for random events every 4 seconds
+}
+
+    
+function travel() {
+    milesTraveled += 10;
+    totalLeaguesTraveled += 10; // Add the current travel distance to total leagues traveled (in steps of 10)
+    food -= 10;
+    health -= 1;
+
+    if (milesTraveled >= 5000) {
+        document.getElementById("output").innerHTML = "Congratulations! You have successfully completed your journey! You visited " + islandsVisited + " locations and ended with a total of " + loot + " loot. Great work, Captain Showoff!";
+        clearInterval(travelInterval); // Stop the travel interval
+        clearInterval(eventInterval); // Stop the event interval
+        document.getElementById("pauseButton").style.display = "none";
+        document.getElementById("resumeButton").style.display = "none";
+        document.getElementById("repairButton").style.display = "none";
+        document.getElementById("scoutButton").style.display = "none";
+        paused = true;
+    } else if (milesTraveled % 190 === 0) {
+        var islandName = getRandomIslandName();
+        document.getElementById("output").innerHTML = "Your ship arrives at " + islandName + "!";
+        clearInterval(travelInterval); // Stop the travel interval
+        clearInterval(eventInterval); // Stop the event interval
+        document.getElementById("pauseButton").style.display = "none";
+        document.getElementById("returnButton").style.display = "block"; // Show the "Return to Ship" button
+        document.getElementById("repairButton").style.display = "none";
+        document.getElementById("scoutButton").style.display = "none";
+document.getElementById("repairShipButton").style.display = "block";
+        document.getElementById("restockRationsButton").style.display = "block";
+        document.getElementById("searchIslandButton").style.display = "block";
+        document.getElementById("talkToStrangersButton").style.display = "block";
+
+        paused = true;
+        islandsVisited++;
+    } else if (food <= 0) {
+        var leaguesTraveled = totalLeaguesTraveled; // Calculate total leagues traveled
+        var leaguesLeft = 5000 - leaguesTraveled; // Calculate leagues left to reach 5,000
+        document.getElementById("output").innerHTML = "Game Over! You made it " + leaguesTraveled + " leagues before succumbing to the sea. There were " + leaguesLeft + " leagues left in your journey. On the way to your demise, you visited " + islandsVisited + " locations and ended your life with a total of $" + loot + " in loot. After sifting through the salvage, your next-of-kin are informed you died due to prolonged starvation.";
+        clearInterval(travelInterval); // Stop the travel interval
+        clearInterval(eventInterval); // Stop the event interval
+        document.getElementById("pauseButton").style.display = "none";
+        document.getElementById("resumeButton").style.display = "none";
+        document.getElementById("repairButton").style.display = "none";
+        document.getElementById("scoutButton").style.display = "none";
+        paused = true;
+    } 
+else if (health <= 0) {
+        var leaguesTraveled = totalLeaguesTraveled; // Calculate total leagues traveled
+        var leaguesLeft = 5000 - leaguesTraveled; // Calculate leagues left to reach 5,000
+        document.getElementById("output").innerHTML = "Game Over! You made it " + leaguesTraveled + " leagues before succumbing to the sea. There were " + leaguesLeft + " leagues left in your journey. On the way to your demise, you visited " + islandsVisited + " locations and ended your life with a total of $" + loot + " in loot. After sifting through the salvage, your next-of-kin are informed you died due to unrepairable damage to the ship.";
+        clearInterval(travelInterval); // Stop the travel interval
+        clearInterval(eventInterval); // Stop the event interval
+        document.getElementById("pauseButton").style.display = "none";
+        document.getElementById("resumeButton").style.display = "none";
+        document.getElementById("repairButton").style.display = "none";
+        document.getElementById("scoutButton").style.display = "none";
+        paused = true;
+    } 
+
+else {
+        document.getElementById("output").innerHTML = "Leagues Traveled: " + totalLeaguesTraveled + "<br>Crew Rations: " + food + "<br>Ship Health: " + health + "<br>Loot: $" + loot + "<br>Hope: " + getHopeStatus(hope);
+
+    }
+}
+
+
+
+function randomEvent() {
+    console.log("Random event triggered."); // Debug statement
+
+    var eventChance = Math.random() * 100; // Random number between 0 and 100
+    console.log("Event chance: " + eventChance); // Debug statement
+
+    if (eventChance < 20 && hope < 39) { // 20% chance of a random event if Hope is less than 20
+        console.log("Random event occurred."); // Debug statement
+        var additionalEvent = Math.floor(Math.random() * 6); // 0 to 5 for events based on Hope < 20
+        if (additionalEvent === 0) {
+            // Event: Ship struck with depression, reduce travel speed
+            var depressionDuration = 50;
+            document.getElementById("output").innerHTML += "<br>The ship is struck with a bout of intense depression after multiple foggy nights. Travel speed reduced for the next " + depressionDuration + " leagues.";
+        } else if (additionalEvent === 1) {
+            // Event: Crew complains, double ration consumption
+            var rationDuration = 100;
+            document.getElementById("output").innerHTML += "<br>The ship's crew complains about the amount of rations, so Crew Ration consumption is doubled for the next " + rationDuration + " leagues.";
+        } else if (additionalEvent === 2) {
+            // Event: Strange dreams keep captain up at night
+            document.getElementById("output").innerHTML += "<br>Strange dreams keep you up at night. You yearn for your own bed at home.";
+        } else if (additionalEvent === 3) {
+            // Event: Fight breaks out, loot knocked overboard
+            var lostLoot = Math.floor(Math.random() * (loot + 1)); // Random amount of loot between 0 and current loot
+            loot -= lostLoot;
+            document.getElementById("output").innerHTML += "<br>A fight breaks out among the crew, and during the scuffle, " + lostLoot + " loot is knocked overboard.";
+        } else if (additionalEvent === 4) {
+            // Event: Rotten stench, Crew Rations gone bad
+            var badRations = Math.floor(Math.random() * (food + 1)); // Random amount of crew rations between 0 and current rations
+            food -= badRations;
+            document.getElementById("output").innerHTML += "<br>A rotten stench alerts you to the fact that " + badRations + " Crew Rations have gone bad.";
+        } else if (additionalEvent === 5) {
+            // Event: Bigger boat makes fun, Hope drops
+            var enemyName = getRandomName();
+            document.getElementById("output").innerHTML += "<br>A much bigger boat with a better-looking crew passes by and makes jokes at your expense. Hope drops by another 3 points.";
+            hope -= 3;
+        }
+    }
+
+    if (eventChance < 20) { // 20% chance of a random event
+        console.log("Random event occurred."); // Debug statement
+        var eventType = Math.floor(Math.random() * 4); // 0, 1, 2, or 3 for different events
+        console.log("Event type: " + eventType); // Debug statement
+
+        // Array of possible attacker names
+        var attackerNames = ["wanna-be pirates", "vicious sea creatures", "cowardly rascals", "a lone shark", "an act of God", "another player", "turncoat loyalists", "confused mercenaries", "a flock of vicious seabirds", "an unseen enemy"];
+
+        if (eventType === 0) {
+            // Event: Found an island with fresh supplies
+            food += 50;
+hope += 1;
+            document.getElementById("output").innerHTML += "<br>You discover a pile of recent wreckage and search for survivors. Crew rations +50.";
+        } else if (eventType === 1) {
+            // Event: Storm damages the ship
+            health -= 30;
+hope -= 2;
+            document.getElementById("output").innerHTML += "<br>A violent storm descends upon you and ravages the topsails. Ship health -30.";
+        } else if (eventType === 2) {
+            // Event: Ship attacked while scouting
+            var damage = Math.floor(Math.random() * (15 - 5 + 1)) + 7; // Random damage between 7 and 17
+            health -= damage;
+hope -= 2;
+            var attackerName = attackerNames[Math.floor(Math.random() * attackerNames.length)];
+            document.getElementById("output").innerHTML += "<br>Your ship was attacked by " + attackerName + " and took " + damage + " damage!";
+        } else {
+            // Event: Found hidden treasure
+            var lootAmount = Math.floor(Math.random() * (100 - 1 + 1)) + 1; // Random loot between $1 and $100
+            loot += lootAmount;
+hope += 1;
+            document.getElementById("output").innerHTML += "<br>You discover a pile of floating debris. Loot +$" + lootAmount + ".";
+        }
+
+        document.getElementById("pauseButton").style.display = "none";
+        document.getElementById("resumeButton").style.display = "block";
+        clearInterval(travelInterval); // Stop the travel interval
+        clearInterval(eventInterval); // Stop the event interval
+
+        console.log("Travel interval and event interval cleared."); // Debug statement
+    }
+}
+
+
+    function pauseJourney() {
+      paused = true;
+      document.getElementById("pauseButton").style.display = "none";
+      document.getElementById("resumeButton").style.display = "block";
+    }
+    
+function resumeJourney() {
+    paused = false;
+    document.getElementById("pauseButton").style.display = "block";
+    document.getElementById("resumeButton").style.display = "none";
+
+    // Clear existing intervals before creating new ones
+    clearInterval(travelInterval);
+    clearInterval(eventInterval);
+
+    // Reset island name and buttons
+    if (milesTraveled % 190 === 0) {
+        var islandName = getRandomIslandName();
+        document.getElementById("output").innerHTML = "Your ship arrives at " + islandName + "!";
+        document.getElementById("repairShipButton").style.display = "none";
+        document.getElementById("restockRationsButton").style.display = "none";
+        document.getElementById("searchIslandButton").style.display = "none";
+        document.getElementById("talkToStrangersButton").style.display = "none";
+        document.getElementById("returnButton").style.display = "block"; // Show the "Return to Ship" button
+    } else {
+        document.getElementById("output").innerHTML = "Leagues Traveled: " + milesTraveled + "<br>Crew Rations: " + food + "<br>Ship Health: " + health + "<br>Loot: $" + loot;
+        document.getElementById("scoutButton").style.display = "block";
+        document.getElementById("returnButton").style.display = "none"; // Hide the "Return to Ship" button
+    }
+
+    // Reset repair button based on ship health and crew rations
+    if (health < 100 && food >= 10) {
+        document.getElementById("repairButton").style.display = "block";
+    } else {
+        document.getElementById("repairButton").style.display = "none";
+    }
+
+    // Hide repair button at the destination
+    if (milesTraveled >= 5000) {
+        document.getElementById("repairButton").style.display = "none";
+    }
+
+    // Reinitialize intervals after clearing existing ones
+    travelInterval = setInterval(function () {
+        if (!paused) {
+            travel();
+        }
+    }, 1000);
+    eventInterval = setInterval(randomEvent, 4000); // Set the event interval to 4 seconds
+}
+
+
+    
+function repairShip() {
+    paused = true;
+    var repairAmount = Math.floor(Math.random() * (50 - 25 + 1)) + 25; // Random repair amount between 25 and 50
+    var repairCost = Math.floor(Math.random() * (20 - 10 + 1)) + 10; // Random repair cost between 10 and 20
+    
+    if (health >= 150) {
+        document.getElementById("output").innerHTML += "<br>If your ship becomes any sturdier, it will sink. You cannot repair it further.";
+    } else if (food >= repairCost) {
+        food -= repairCost;
+        health += repairAmount;
+        document.getElementById("output").innerHTML += "<br>You repaired the ship! Ship health +" + repairAmount + ". Crew rations -" + repairCost + ".";
+    } else {
+        document.getElementById("output").innerHTML += "<br>Not enough crew rations to repair the ship!";
+    }
+
+    document.getElementById("pauseButton").style.display = "none";
+    document.getElementById("resumeButton").style.display = "block";
+
+  if (milesTraveled % 190 === 0) {
+        if (milesTraveled % 190 === 0) {
+        var islandName = getRandomIslandName();
+        document.getElementById("output").innerHTML = "Your ship arrives at " + islandName + "!";
+        document.getElementById("repairShipButton").style.display = "block";
+        document.getElementById("restockRationsButton").style.display = "block";
+        document.getElementById("searchIslandButton").style.display = "block";
+        document.getElementById("talkToStrangersButton").style.display = "block";
+        document.getElementById("returnButton").style.display = "block"; // Show the "Return to Ship" button
+  } else {
+    document.getElementById("scoutButton").style.display = "block";
+  }
+  if (milesTraveled >= 5000) {
+    document.getElementById("repairButton").style.display = "none"; // Hide the "Repair Ship" button at the destination
+  } else {
+    if (health < 100 && food >= 10) {
+      document.getElementById("repairButton").style.display = "block";
+    } else {
+      document.getElementById("repairButton").style.display = "none";
+    }
+  }
+}
+}
+    
+    function scoutForFood() {
+      paused = true;
+      var scoutResult = Math.floor(Math.random() * 3); // 0, 1, or 2 for different outcomes
+      
+      if (scoutResult === 0) {
+        // Outcome: The search boats come back empty
+        document.getElementById("output").innerHTML += "<br>The search boats come back empty.";
+      } else if (scoutResult === 1) {
+        // Outcome: Your party returns with a few vittles
+        var foundFood = Math.floor(Math.random() * (45 - 5 + 1)) + 5; // Random food between 5 and 45
+        food += foundFood;
+        document.getElementById("output").innerHTML += "<br>Your party returns with a few vittles! Crew rations +" + foundFood + ".";
+hope += 1;
+      } else {
+        // Outcome: Ship attacked while waiting and took damage
+        var damage = Math.floor(Math.random() * (15 - 5 + 1)) + 5; // Random damage between 5 and 15
+        health -= damage;
+        document.getElementById("output").innerHTML += "<br>Your ship was attacked while waiting and took " + damage + " damage!";
+hope -= 1;
+      }
+      
+    // Chance of gaining loot while scouting
+    var lootChance = Math.random();
+    if (lootChance < 0.2) { // 20% chance of gaining loot
+        var lootAmount = Math.floor(Math.random() * (100 - 1 + 1)) + 1; // Random loot between $1 and $100
+        loot += lootAmount;
+hope += 1;
+        document.getElementById("output").innerHTML += "<br>You found hidden loot while scouting! Loot +$" + lootAmount + ".";
+    }
+
+    document.getElementById("pauseButton").style.display = "none";
+    document.getElementById("resumeButton").style.display = "block";
+}
+
+    
+    function getRandomIslandName() {
+      var randomBeginning = ["New Florida", "Bingo Cheater's", "Smokehouse", "Plum", "Perry", "Perron", "Romero", "Carmack", "Bleszinski", "Kojima", "Sid Meier's", "Coville", "LeGuin", "Martin", "Ellis", "Croshaw", "Mitchell's", "Eric's", "Josh's", "Jared's", "Penny's", "Mike's", "Fleming", "Ernest Point", "Totally Safe", "Ossabunga", "Stabtown", "Betrayer", "Twingle", "Fanfare", "Mesa Blanco", "an unmapped", "Parrot's Tongue", "Black", "Hidden", "Scallywag", "Bosun's Beef", "Golden", "Treasure", "Anklebone", "Dead Man's", "Pirate's", "Captain's", "Prisoner's", "Freefolk", "Jarmy", "Exile", "DogTree", "Banjo Strummer's", "Pickpocketer's", "Moonlight", "Sunlit", "Cloudcover", "a fog-shrouded", "Jinjo", "En Carde"];
+      var randomEnding = ["Island", "Cove", "Shores", "Harbor", "Bay", "Reef", "Haven", "Hideaway", "Hideout", "Key", "Cay", "Lagoon", "Isle", "Islet", "Atoll", "Archipelago", "Crest", "Point", "Wharf", "Dock", "Volcano", "Sandbar", "Barge", "Beach", "Lighthouse", "Bouy Town"];
+      var randomIslandName = randomBeginning[Math.floor(Math.random() * randomBeginning.length)] + " " + randomEnding[Math.floor(Math.random() * randomEnding.length)];
+      return randomIslandName;
+    }
+
+function returnToShip() {
+    // Clear existing intervals
+    clearInterval(travelInterval);
+    clearInterval(eventInterval);
+    paused = true; // Pause the game initially
+    hasTalkedToStrangersOnIsland = false;
+    // Reset buttons and messages
+    document.getElementById("output").innerHTML = "You return to your ship.";
+    document.getElementById("repairShipButton").style.display = "none";
+    document.getElementById("restockRationsButton").style.display = "none";
+    document.getElementById("searchIslandButton").style.display = "none";
+    document.getElementById("talkToStrangersButton").style.display = "none";
+    document.getElementById("returnButton").style.display = "none";
+
+    // Reinitialize intervals after clearing existing ones
+    travelInterval = setInterval(function () {
+        if (!paused) {
+            travel();
+        }
+    }, 1000);
+    eventInterval = setInterval(randomEvent, 4000); // Set the event interval to 4 seconds
+    // Show the appropriate buttons for ship repair, scout for food, and pause travel
+    if (milesTraveled < 5000) {
+        document.getElementById("repairButton").style.display = "block";
+        document.getElementById("scoutButton").style.display = "block";
+        document.getElementById("pauseButton").style.display = "block";
+    }
+    paused = false; // Unpause the game after reinitializing the intervals
+}
+
+
+function repairShipOnIsland() {
+    var repairCost = (100 - health) * 2;
+    
+    if (health >= 150) {
+        document.getElementById("output").innerHTML += "<br>If your ship becomes any sturdier, it will never make it out to sea. You cannot repair it further.";
+    } else if (loot >= repairCost) {
+        loot -= repairCost;
+        health += 150;
+        document.getElementById("output").innerHTML += "<br>Your ship has been fully repaired! Ship health +" + 150 + ". Loot -$" + repairCost + ".";
+    } else {
+        document.getElementById("output").innerHTML += "<br>Not enough loot to repair the ship!";
+    }
+
+    document.getElementById("repairShipButton").style.display = "block";
+}
+
+
+function restockRations() {
+    var rationsAmount = Math.floor(Math.random() * (125 - 45 + 1)) + 45; // Random rations between 45 and 125
+    var restockCost = rationsAmount;
+    if (loot >= restockCost) {
+        loot -= restockCost;
+        food += rationsAmount;
+        document.getElementById("output").innerHTML += "<br>Your ship rations have been restocked! Crew rations +" + rationsAmount + ". Loot -$" + restockCost + ".";
+    } else {
+        document.getElementById("output").innerHTML += "<br>Not enough loot to restock ship rations!";
+    }
+    document.getElementById("restockRationsButton").style.display = "block";
+}
+
+function searchIsland() {
+    var searchResult = Math.floor(Math.random() * 13) + 1; // Random number between 1 and 13 for different events
+    
+    // Perform actions based on the search result
+    if (searchResult === 1) {
+        if (hasBottle === 3) {
+            document.getElementById("output").innerHTML += "<br>You decide to walk down to the beach, but are stopped short when you notice hundreds, if not thousands, of glass bottles have washed onto shore. You kneel down and examine them closer to find that each bottle appears to be filled with gold coins. Greedily, you carry as many of them back to the boat as you can, amassing nearly $400 in loot!";
+hope += 5;
+loot += 399;
+hasBottle -= 3;
+        } else if (hasBottle === 2) {
+            document.getElementById("output").innerHTML += "<br>As you are walking on the beachfront, you notice a disheveled-looking figure throwing glass bottles into the ocean and screaming obscenities. As you get closer to the figure, it appears to notice you and hastily dives into the ocean. You do not see anything return to the surface.";
+hope -= 5;
+hasBottle += 1;
+        } else if (hasBottle === 1) {
+            document.getElementById("output").innerHTML += "<br>While taking a stroll on the beach, you notice another bottle in the sand. This one seems to have a message inside, but the cap has been rusted shut. You decide to keep it for good luck.";
+hasBottle += 1;
+        } 
+else {        document.getElementById("output").innerHTML += "<br>You take a walk down the beach and find a bottle in the sand, but it is empty.";
+hope -= 1;
+hasBottle += 1;
+        }
+    } else if (searchResult === 2) {
+        document.getElementById("output").innerHTML += "<br>It is too foggy to see anything right now.";
+    } else if (searchResult === 3) {
+        document.getElementById("output").innerHTML += "<br>It is raining too hard to go out and look.";
+    } else if (searchResult === 4) {
+        if (wrongPerson === 3) {
+            document.getElementById("output").innerHTML += "<br>During a brief walk, you notice someone who looks exactly like you knife an unarmed drunk in an alley. You try to chase after them, but they are too fast. When you return to the alley to check on the wounded drunk, their body is nowhere to be found. Only the smell of blood and alcohol remains.";
+wrongPerson -= 3;
+        } else if (wrongPerson === 2) {
+        var foundLoot = Math.floor(Math.random() * (175 - 25 + 1)) + 25; // Random loot between 25 and 175
+            document.getElementById("output").innerHTML += "<br>While walking down a trail, you are suddenly set upon by trained mercenaries and captured. Your crew pays $" + foundLoot + " for your freedom, but no amount of money can buy back your dignity.";
+        loot -= foundLoot;
+hope -= 25;
+wrongPerson += 1;
+        } else if (wrongPerson === 1) {
+            document.getElementById("output").innerHTML += "<br>During a brief walk, you notice a crudely drawn 'Wanted' poster. Despite the level of skill on display, it is undeniably an image of you. Ensuring no one is watching, you rip the poster down and hurry away.";
+wrongPerson += 1;
+        } 
+else {        document.getElementById("output").innerHTML += "<br>During a brief walk, you are mistaken for someone else and nearly killed.";
+hope -= 10;
+wrongPerson += 1;
+        }
+
+    } else if (searchResult === 5) {
+        var lostRations = Math.floor(Math.random() * 101); // Random amount of crew rations between 0 and 100
+        food -= lostRations;
+hope -= 5;
+        document.getElementById("output").innerHTML += "<br>You get lost in the jungle and take days to find your way out. In the meantime, the crew went through " + lostRations + " crew rations.";
+    } else if (searchResult === 6) {
+        if (sideQuestOne === 1) {
+            document.getElementById("output").innerHTML += "<br>You attempt to spend the afternoon praying again, but something is amiss in the air. It feels like you are being watched. You retreat from the temple before your prayers to forgotten gods are complete.";
+hope -= 3;
+sideQuestOne += 1;
+        } else if (sideQuestOne === 2) {
+            document.getElementById("output").innerHTML += "<br>You spend the afternoon praying to forgotten gods. As you go to leave the temple, you spot a large bag in the doorway that wasn't there before. Inside is $500 in loot, along with enough food for 10 days.";
+hope += 10;
+loot += 500;
+food += 100;
+sideQuestOne -= 2;
+        } 
+else {           document.getElementById("output").innerHTML += "<br>You spend all afternoon praying at statues to forgotten gods.";
+            sideQuestOne += 1;
+            hope += 10;
+        }
+    } else if (searchResult === 7) {
+        var foundLoot = Math.floor(Math.random() * (175 - 25 + 1)) + 25; // Random loot between 25 and 175
+        loot += foundLoot;
+        document.getElementById("output").innerHTML += "<br>You discover $" + foundLoot + " hidden somewhere disgusting.";
+hope += 3;
+    } else if (searchResult === 8) {
+
+if (nativeChase === 4) {
+    document.getElementById("output").innerHTML += "<br>You find a large clearing filled with the corpses of mutilated natives. Many of them are missing arms, legs, and heads, sometimes all three. A large fire pit is in the center of the clearing, and resting on the pit is a metal screen with multiple large chunks of delicious-looking meat. It would be enough to feed your crew for nearly three weeks... so you take it.";
+    nativeChase -= 4;
+    food += 209;        
+} else if (nativeChase === 3) {
+    document.getElementById("output").innerHTML += "<br>The sound of natives leads you to a clearing, where you find a large ceremony taking place. You attempt to watch without disturbing anyone, but you are soon spotted and chased off.";
+    nativeChase += 1;
+    hope -= 15;
+}
+
+else if (nativeChase === 2) {
+            document.getElementById("output").innerHTML += "<br>You find some natives and attempt to communicate with them the same way you did previously, but it seems like they are scared of you for some reason.";
+hope -= 10;
+        } else if (nativeChase === 1) {
+            document.getElementById("output").innerHTML += "<br>You meet some friendly natives that don't speak your language, so you communicate through hand gestures and drawing lines in the sand. You teach them some sea shanties, and they share enough food with your crew to cover almost 7 days of rations.";
+food += 69;
+hope += 10;
+nativeChase += 1;
+        } 
+else {
+        document.getElementById("output").innerHTML += "<br>You are chased away from the shore by angry natives.";
+hope -= 3;
+nativeChase += 1;
+        }
+
+    } else if (searchResult === 9) {
+        if (graveRob === 3) {
+            document.getElementById("output").innerHTML += "<br>You hear growing and chomping sounds coming from a nearby cemetary, but don't dare get any closer.";
+graveRob -= 3;
+        } else if (graveRob === 2) {
+        document.getElementById("output").innerHTML += "<br>You discover an old cemetary filled with mostly unmarked graves. As you walk through, you notice that one grave has been dug out quite recently. Once you get closer, you realize that whoever's grave this is has the same exact name as you do.";
+hope -= 8;
+graveRob += 1;
+        } else if (graveRob === 1) {
+            document.getElementById("output").innerHTML += "<br>You discover a cemetary filled with graves that all have the same date of death, just like the cemetary you visited previously. One of the graves seems to have been dug out quite recently, and inside you find $100 in gold coins!";
+graveRob += 1;
+loot += 100;
+        } 
+else {        document.getElementById("output").innerHTML += "<br>You come across a cemetary, and each grave has the same date of death.";
+hope -= 2;
+graveRob += 1;
+        }
+
+    } else if (searchResult === 10) {
+        document.getElementById("output").innerHTML += "<br>Someone approaches you and thanks you for helping them recover a long-lost memory, but you don't know who they are.";
+hope += 7;
+    } else if (searchResult === 11) {
+        if (lightDistance === 1) {
+            document.getElementById("output").innerHTML += "<br>While walking around you see bright lights off in the distance again, this time accompanied by the faint sound of a bell. The dancing lights seem to be moving closer to you than they were last time, but when you step towards them they disappear once more.";
+hope -= 3;
+lightDistance += 1;
+        } else if (lightDistance === 2) {
+            document.getElementById("output").innerHTML += "<br>While walking through some brush, suddenly you are surrounded by bright light. You feel a warm sensation deep within your chest, as if some sort of spell has been lifted. You have rarely felt so at peace with the world.";
+hope += 40;
+lightDistance -= 2;
+        } 
+else {           document.getElementById("output").innerHTML += "<br>While perusing the town you see bright lights in the distance that seem to move, but you cannot reach them.";
+hope -= 2;
+lightDistance += 1;
+        }
+    } else if (searchResult === 12) {
+        var foundLoot = Math.floor(Math.random() * 76); // Random loot between 0 and 75
+        loot += foundLoot;
+        var foundRations = Math.floor(Math.random() * 101) + 20; // Random crew rations between 20 and 120
+        food += foundRations;
+hope += 10;
+        document.getElementById("output").innerHTML += "<br>A new crew member comes aboard, bringing $" + foundLoot + " and " + foundRations + " crew rations with them.";
+    } else if (searchResult === 13) {
+        var extraRations = Math.floor(Math.random() * 101); // Random amount of crew rations between 0 and 100
+        food += extraRations;
+hope -= 10;
+        document.getElementById("output").innerHTML += "<br>A crew member is killed by a local, meaning there are now " + extraRations + " more crew rations to go around.";
+    }
+
+    document.getElementById("searchIslandButton").style.display = "none"; // Hide the Search the Island button after searching once
+}
+
+
+var hasTalkedToStrangersOnIsland = false; // Flag to track if players have talked to strangers on the current island
+
+function talkToStrangers() {
+    if (!hasTalkedToStrangersOnIsland) {
+        var randomEvent = Math.floor(Math.random() * 8); // Random number between 0 and 7 for different events
+        
+        if (randomEvent === 0) {
+            document.getElementById("output").innerHTML += "<br>No one is interested in what you have to say.";
+        } else if (randomEvent === 1) {
+            var randomName = getRandomName();
+                    if (secretTold === 1) {
+            document.getElementById("output").innerHTML += "<br>While chatting with someone named " + randomName + " at the local bar, you realize you accidentally let slip the secret you were told earlier.";
+hope -= 3;
+secretTold += 1;
+        } else if (secretTold === 2) {
+            document.getElementById("output").innerHTML += "<br>While drinking at the local bar, you are suddenly ambushed by a group of sailors accusing you of spreading rumors about someone named " + randomName + ". You escape, but you will be forever remembered as a gossip.";
+hope -= 20;
+secretTold -= 2;
+        } 
+else {           document.getElementById("output").innerHTML += "<br>You chat up someone named " + randomName + " at the local bar and are told a dastardly secret.";
+hope -= 2;
+secretTold += 1
+        }
+        } else if (randomEvent === 2) {
+            var lostLoot = Math.floor(Math.random() * (loot + 1)); // Random amount of loot between 0 and current loot
+            loot -= lostLoot;
+hope -= 5;
+            document.getElementById("output").innerHTML += "<br>You are set upon by bandits while you aren't paying attention and lose $" + lostLoot + " loot!";
+        } else if (randomEvent === 3) {
+if (wonGamble === 4) {
+    document.getElementById("output").innerHTML += "<br>Someone grabs your arm and whispers your name. You turn and look to see who it is, but no one is there. On the ground in front of you, where you felt the presence of the person, is a single playing card. You pick it up and turn it over. It is the ace of spades.";
+    wonGamble -= 4;        
+} else if (wonGamble === 3) {
+    document.getElementById("output").innerHTML += "<br>You sit down at a table to gamble, but everyone else leaves immediately.";
+    wonGamble += 1;
+    hope -= 15;
+} else if (wonGamble === 2) {
+    var wonLoot = Math.floor(Math.random() * (191) + 10); // Random amount of loot between 10 and 200
+    loot += wonLoot;
+    hope += 15;
+    document.getElementById("output").innerHTML += "<br>You end up gambling with some shady characters and win $" + wonLoot + " loot. Everyone eyes you suspiciously.";
+} else if (wonGamble === 1) {
+    document.getElementById("output").innerHTML += "<br>You sit down to gamble with a group of strangers, but for some reason no one wants to play with you";
+    hope -= 10;
+    wonGamble += 1;
+} 
+else {
+    var wonLoot = Math.floor(Math.random() * (191) + 10); // Random amount of loot between 10 and 200
+    loot += wonLoot;
+    hope += 5;
+    document.getElementById("output").innerHTML += "<br>You end up gambling with some real marks and win $" + wonLoot + " loot!";
+    wonGamble += 1;
+}
+
+} else {
+            var wonLoot = Math.floor(Math.random() * (191) + 10); // Random amount of loot between 10 and 200
+            loot += wonLoot;
+hope += 5;
+            document.getElementById("output").innerHTML += "<br>You end up gambling with some real marks and win $" + wonLoot + " loot!";
+wonGamble += 1;
+        }
+        } else if (randomEvent === 4) {
+var randomName = getRandomName();            
+var lostLoot = Math.floor(Math.random() * 150) + 1; // Random amount of loot between 1 and 150
+            loot -= lostLoot;
+hope -= 3;
+            document.getElementById("output").innerHTML += "<br>You end up gambling with unsavory characters and lose $" + lostLoot + " loot to someone named " + randomName + "!";
+        } else if (randomEvent === 5) {
+
+        if (eatPeep === 3) {
+            document.getElementById("output").innerHTML += "<br>The docks are nearly all taken by small, smelly fishing boats, but there does not seem to be anyone around. Suddenly, as you approach the local bar, the silence is pierced by the sound of screams, the ungodly ripping noise of tearing flesh, and someone shouting 'We've got a live one here!'. After a moment of shock, you decide it's probably best to stay away.";
+eatPeep -= 3;
+        } else if (eatPeep === 2) {
+        document.getElementById("output").innerHTML += "<br>You are finding it hard to located people to talk to here. All you see are a few fisherman who don't seem to be doing any work. One of them eyes you hungrily, and you don't want to get any closer.";
+hope -= 3;
+eatPeep += 1;
+        } else if (eatPeep === 1) {
+            document.getElementById("output").innerHTML += "<br>You are told stories about local fisherman who can no longer survive on fish alone, and have turned to hunting larger prey. One fisherman gives you all the fish he has, nearly 40 crew rations' worth, saying he 'doesn't need it anymore'.";
+food += 39;
+eatPeep += 1;
+        } 
+else {        document.getElementById("output").innerHTML += "<br>You are told stories about mysterious disappearances.";
+hope -= 1;
+eatPeep += 1;
+        }
+        } else if (randomEvent === 6) {
+            var lostRations = Math.floor(Math.random() * (food + 1)); // Random amount of crew rations between 0 and current rations
+            food -= lostRations;
+hope -= 5;
+            document.getElementById("output").innerHTML += "<br>You are set upon by hungry children and lose " + lostRations + " crew rations!";
+        } else if (randomEvent === 7) {
+
+if (animalFriend === 4) {
+            document.getElementById("output").innerHTML += "<br>You see a hungry dog gnawing on the corpse of a parrot.";
+animalFriend -= 4;        
+} else if (animalFriend === 3) {
+            document.getElementById("output").innerHTML += "<br>While strolling through the woods, suddenly the parrot on your shoulder flies off out of sight. You are left alone.";
+animalFriend += 1;
+hope -= 15;
+        } else if (animalFriend === 2) {
+        document.getElementById("output").innerHTML += "<br>You find a parrot that repeats everything you say. It seems happy on your shoulder.";
+hope += 10;
+animalFriend += 1;
+        } else if (animalFriend === 1) {
+            document.getElementById("output").innerHTML += "<br>You are chased away by a group of vicious monkeys and, just when you think you've gotten away, you trip on something in the sand and fall over, causing the monkeys to make a sound not unlike laughter.";
+hope -= 10;
+animalFriend += 1;
+        } 
+else {  document.getElementById("output").innerHTML += "<br>You meet a friendly dog.";
+hope += 5;
+animalFriend += 1;
+        }
+
+
+   }  else {
+        document.getElementById("output").innerHTML += "<br>There is no one interested in you here.";
+    }
+    hasTalkedToStrangersOnIsland = true;
+}
+
+
+function getRandomName() {
+    var firstNames = ["One-Eyed", "Hungry", "Thin", "Puffy", "Old", "Young", "Little", "Big", "Hairy", "Bald", "Ugly", "Pretty", "Lyin'", "Spyin'", "Cryin'", "Mister", "Missus", "Big", "Small", "Two-Toed", "Three-Fingered", "Four-Headed"];
+    var lastNames = ["Fred", "Joe", "Samantha", "Elijah", "John", "Cliff", "Kirk", "Matthew", "Jason", "Austin", "Cody", "Kyle", "Lara", "Laura", "Caitlin", "Patrick", "Huey", "Isaac", "Stephen", "George", "Linda", "Vanessa", "Rachel", "Monica", "Phoebe", "Lisa", "Courtney", "Jennifer"];
+
+    var firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    var lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+
+    return firstName + " " + lastName;
+}
+
+function getHopeStatus(hope) {
+    if (hope <= 10) {
+        return "None Left";
+    } else if (hope <= 20) {
+        return "Little Remaining";
+    } else if (hope <= 30) {
+        return "Desperate for Help";
+    } else if (hope <= 40) {
+        return "Rapidly Dwindling";
+    } else if (hope <= 49) {
+        return "Diminishing";
+    } else if (hope === 50) {
+        return "Lacking";
+    } else if (hope <= 60) {
+        return "More than yesterday";
+    } else if (hope <= 70) {
+        return "Things are good";
+    } else if (hope <= 99) {
+        return "You might survive";
+    } else {
+        return "More than ever before";
+    }
+}
+
+function DisplayHope() {
+    var hopeStatus = getHopeStatus(hope);
+    document.getElementById("hopeStatus").innerHTML = "Hope Status: " + hopeStatus;
+}
+
+
+  </script>
+</body>
+</html>

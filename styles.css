@@ -1,0 +1,50 @@
+        body {
+            background-color: black;
+            color: #00FF41; /* Green text color */
+            font-family: Arial, sans-serif;
+        }
+
+.button {
+    background-color: #00FF41; /* Green button background color */
+    color: black; /* Black button text color */
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease; /* Add a transition effect for smooth color change */
+}
+
+.button:hover {
+    background-color: #00CC34; /* Darker green on button hover */
+}
+
+    /* CSS styles for the ship */
+    #ship {
+      position: fixed;
+      top: 10px; /* Adjust the top position as needed */
+      right: 10px; /* Adjust the right position as needed */
+      width: 50px; /* Adjust the width of the ship */
+      height: 50px; /* Adjust the height of the ship */
+      background-color: #4285f4; /* Set the background color of the ship */
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* Create a triangle shape for the ship */
+    }
+
+/* styles.css */
+#startButton:hover,
+#pauseButton:hover,
+#resumeButton:hover,
+#repairButton:hover,
+#scoutButton:hover,
+#returnButton:hover,
+#repairShipButton:hover,
+#restockRationsButton:hover,
+#searchIslandButton:hover,
+#talkToStrangersButton:hover {
+  background-color: green;
+  color: white;
+}
