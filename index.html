@@ -28,7 +28,7 @@
   
   <script>
     var milesTraveled = 0;
-    var food = 500;
+    var food = 300;
 var loot = 0;
     var health = 100;
     var paused = false;
@@ -182,13 +182,15 @@ food -= rationDuration;
         }
     }
 
-    if (eventChance < 25) { // 25% chance of a random event
+    if (eventChance < 20) { // 25% chance of a random event
         console.log("Random event occurred."); // Debug statement
         var eventType = Math.floor(Math.random() * 4); // 0, 1, 2, or 3 for different events
         console.log("Event type: " + eventType); // Debug statement
 
         // Array of possible attacker names
         var attackerNames = ["wanna-be pirates", "vicious sea creatures", "cowardly rascals", "a lone shark", "an act of God", "another player", "turncoat loyalists", "confused mercenaries", "a flock of vicious seabirds", "an unseen enemy"];
+var stormNames = ["violent storm", "sudden waterspout", "massive wave"];
+var boatDamages = ["ravages the topsails", "smashes into the masthead", "splinters the bow", "reduces the mainsail to tatters"];
 
         if (eventType === 0) {
             // Event: Found an island with fresh supplies
@@ -199,7 +201,9 @@ hope -= 1;
             // Event: Storm damages the ship
             health -= 30;
 hope -= 2;
-            document.getElementById("output").innerHTML += "<br>A violent storm descends upon you and ravages the topsails. Ship health -30.";
+var stormName = stormNames[Math.floor(Math.random() * stormNames.length)];
+var boatDamage = boatDamages[Math.floor(Math.random() * boatDamages.length)];
+            document.getElementById("output").innerHTML += "<br>A " + stormName + " descends upon you and " + boatDamage + ". Ship health -30.";
         } else if (eventType === 2) {
             // Event: Ship attacked while scouting
             var damage = Math.floor(Math.random() * (15 - 5 + 1)) + 7; // Random damage between 7 and 17
@@ -525,7 +529,7 @@ sideQuestOne -= 2;
         } 
 else {           document.getElementById("output").innerHTML += "<br>You spend all afternoon praying at statues to forgotten gods.";
             sideQuestOne += 1;
-            hope += 10;
+            hope += 2;
         }
     } else if (searchResult === 7) {
         var foundLoot = Math.floor(Math.random() * (175 - 25 + 1)) + 25; // Random loot between 25 and 175
@@ -578,9 +582,16 @@ graveRob += 1;
         }
 
     } else if (searchResult === 10) {
-        document.getElementById("output").innerHTML += "<br>Someone approaches you and thanks you for helping them recover a long-lost memory, but you don't know who they are.";
-hope += 7;
-    } else if (searchResult === 11) {
+if (hope <= 70) {
+                        document.getElementById("output").innerHTML += "<br>Someone approaches you and thanks you for helping them recover a long-lost memory, but you don't know who they are.";
+hope += 4;
+
+            } else {
+                document.getElementById("output").innerHTML += "<br>Someone approaches you and asks for your name. When you tell them, they get a strange look in their eye and back away from you slowly.";
+            }
+        }
+
+     else if (searchResult === 11) {
         if (lightDistance === 1) {
             document.getElementById("output").innerHTML += "<br>While walking around you see bright lights off in the distance again, this time accompanied by the faint sound of a bell. The dancing lights seem to be moving closer to you than they were last time, but when you step towards them they disappear once more.";
 hope -= 3;
@@ -658,13 +669,6 @@ if (wonGamble === 4) {
     hope -= 10;
     wonGamble += 1;
 } 
-else {
-    var wonLoot = Math.floor(Math.random() * (191) + 10); // Random amount of loot between 10 and 200
-    loot += wonLoot;
-    hope += 5;
-    document.getElementById("output").innerHTML += "<br>You end up gambling with some real marks and win $" + wonLoot + " loot!";
-    wonGamble += 1;
-}
 
 } else {
             var wonLoot = Math.floor(Math.random() * (191) + 10); // Random amount of loot between 10 and 200
@@ -673,7 +677,7 @@ hope += 5;
             document.getElementById("output").innerHTML += "<br>You end up gambling with some real marks and win $" + wonLoot + " loot!";
 wonGamble += 1;
         }
-        } else if (randomEvent === 4) {
+        }  else if (randomEvent === 4) {
 var randomName = getRandomName();            
 var lostLoot = Math.floor(Math.random() * 150) + 1; // Random amount of loot between 1 and 150
             loot -= lostLoot;
